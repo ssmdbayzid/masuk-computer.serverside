@@ -19,12 +19,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     await client.connect()
     const productCollection = client.db('masukComputer').collection('product')
-
+    // get all product
     app.get('/product', async (req, res)=>{
         const query = {};
         const cursor = productCollection.find(query);
         const products  = await cursor.toArray();
         res.send(products)
+    })
+    app.get('/home', async(req, res)=>{
+        const query = {};
+        const cursor = productCollection.find(query).limit(6);
+        const result = await cursor.toArray();
+        res.send(result);
     })
 
 }
