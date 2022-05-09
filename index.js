@@ -20,12 +20,30 @@ async function run(){
     await client.connect()
     const productCollection = client.db('masukComputer').collection('product')
 
-    // Update Quantity
+    // Update Quantity After Delivery
+    app.put('/inventory/:id', async(req, res)=>{
+        const id = req.params.id;
+        const delQty = req.body;
+        console.log(delQty.updateQty)
+        const filter = {_id: ObjectId(id)};
+        const option = { upsert : true }
+        console.log(filter)
+        const updateDeliveryQty = {
+            $set: {
+                stock_Quantity: delQty.updateQty
+            }
+        }
+        const result = await productCollection.updateOne(filter, updateDeliveryQty, option)
+        res.send(result);
+    })
+
+
     app.get('/inventory/:id', async (req, res)=>{
         const id = req.params.id;
+        console.log(id)
         const query = {_id: ObjectId(id)}
         const result = await productCollection.findOne(query);
-        res.send(result);
+        res.send(result)
     })
     
     // get all product
