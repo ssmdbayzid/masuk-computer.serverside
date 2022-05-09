@@ -20,6 +20,16 @@ async function run(){
     await client.connect()
     const productCollection = client.db('masukComputer').collection('product')
 
+    // Delete Items
+    app.get('/inventory/:id', async (req, res)=>{
+        const id = req.params.id;
+        console.log(id)
+        const query = {_id: ObjectId(id)}
+        const result = await productCollection.deleteOne(query);
+        res.send(result)
+    })
+  
+
     // Update Quantity After Delivery
     app.put('/inventory/:id', async(req, res)=>{
         const id = req.params.id;
@@ -40,7 +50,6 @@ async function run(){
 
     app.get('/inventory/:id', async (req, res)=>{
         const id = req.params.id;
-        console.log(id)
         const query = {_id: ObjectId(id)}
         const result = await productCollection.findOne(query);
         res.send(result)
