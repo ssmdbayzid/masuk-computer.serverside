@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 const app = express();
 const cors =require('cors');
 require('dotenv').config();
@@ -19,6 +19,15 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     await client.connect()
     const productCollection = client.db('masukComputer').collection('product')
+
+    // Update Quantity
+    app.get('/inventory/:id', async (req, res)=>{
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)}
+        const result = await productCollection.findOne(query);
+        res.send(result);
+    })
+    
     // get all product
     app.get('/product', async (req, res)=>{
         const query = {};
@@ -26,6 +35,7 @@ async function run(){
         const products  = await cursor.toArray();
         res.send(products)
     })
+    // get 6 items for inventory
     app.get('/home', async(req, res)=>{
         const query = {};
         const cursor = productCollection.find(query).limit(6);
