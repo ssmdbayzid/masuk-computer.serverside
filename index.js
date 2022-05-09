@@ -20,10 +20,15 @@ async function run(){
     await client.connect()
     const productCollection = client.db('masukComputer').collection('product')
 
+    // Create A New Product
+    app.post('/product', async(req, res)=>{
+        const newProduct = req.body;
+        const result = await productCollection.insertOne(newProduct)
+        res.send(result)
+    })
     // Delete Items
-    app.get('/inventory/:id', async (req, res)=>{
+    app.delete('/inventory/:id', async (req, res)=>{
         const id = req.params.id;
-        console.log(id)
         const query = {_id: ObjectId(id)}
         const result = await productCollection.deleteOne(query);
         res.send(result)
